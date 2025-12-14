@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Navbar from './components/Navbar'
 import { useLocation } from 'react-router-dom';
+import AppRoutes from './routes';
 
 const App = () => {
 
@@ -10,6 +11,7 @@ const App = () => {
   return (
     <>
       {!isOwnerPath && <Navbar setShowLogin={setShowLogin}/>}
+      <AppRoutes />
     </>
   )
 }

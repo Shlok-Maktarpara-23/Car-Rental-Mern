@@ -12,7 +12,7 @@ const Navbar = ({setShowLogin}) => {
     <>
       <div
         className={`flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 text-gray-600 border-b border-borderColour relative transition-all 
-            ${location.pathname === "/" && "bg-gray-200"}`}
+            ${location.pathname === "/" && "bg-light"}`}
       >
         <Link to={"/"}>
           <img src={logo} alt="logo" className="h-8" />
@@ -20,7 +20,7 @@ const Navbar = ({setShowLogin}) => {
 
         <div
           className={`max-sm:fixed max-sm:h-screen max-sm:w-full max-sm:top-16 max-sm:p-4 right-0 flex items-start flex-col gap-4 sm:flex-row sm:items-center sm:gap-8 transition-all duration-300 z-50 ${
-            location.pathname === "/" ? "bg-gray-200" : "bg-white"
+            location.pathname === "/" ? "bg-light" : "bg-white"
           } ${open ? "max-sm:translate-x-0" : "max-sm:translate-x-full"}`}
         >
           {menuLinks.map((link, index) => (
