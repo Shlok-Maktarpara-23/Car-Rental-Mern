@@ -3,6 +3,7 @@ import Hero from '../components/Hero'
 import FeaturedSection from '../components/FeaturedSection'
 import CTA from '../components/CTA'
 import Testimonial from '../components/Testimonial'
+import Newsletter from '../components/Newsletter'
 
 const Home = () => {
   return (
@@ -11,6 +12,7 @@ const Home = () => {
         <FeaturedSection />
         <CTA />
         <Testimonial />
+        <Newsletter />
     </div>
   )
 }
