@@ -30,7 +30,7 @@ const FeaturedSection = () => {
           navigate("/cars");
           scrollTo(0, 0);
         }}
-        className="flex items-center justify-center gap-2 px-6 py-2 border border-borderColour hover:bg-gray-50 rounded-mt mt-18 cursor-pointer"
+        className="flex items-center justify-center gap-2 px-6 py-2 border border-borderColour hover:bg-gray-50 rounded-2xl mt-18 cursor-pointer"
       >
         Explore all cars <img src={arrow_icon} alt="arrow" />
       </button>
