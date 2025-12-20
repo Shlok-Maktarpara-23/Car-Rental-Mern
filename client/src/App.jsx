@@ -1,19 +1,21 @@
-import React, { useState } from 'react'
-import Navbar from './components/Navbar'
-import { useLocation } from 'react-router-dom';
-import AppRoutes from './routes';
+import React, { useState } from "react";
+import Navbar from "./components/Navbar";
+import { useLocation } from "react-router-dom";
+import AppRoutes from "./routes";
+import Footer from "./components/Footer";
 
 const App = () => {
-
-  const [ShowLogin,setShowLogin] = useState(false);
-  const isOwnerPath = useLocation().pathname.startsWith('/owner')
+  const [ShowLogin, setShowLogin] = useState(false);
+  const isOwnerPath = useLocation().pathname.startsWith("/owner");
 
   return (
     <>
-      {!isOwnerPath && <Navbar setShowLogin={setShowLogin}/>}
+      {!isOwnerPath && <Navbar setShowLogin={setShowLogin} />}
       <AppRoutes />
-    </>
-  )
-}
 
-export default App
+      {!isOwnerPath && <Footer />}
+    </>
+  );
+};
+
+export default App;
