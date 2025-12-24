@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Navbar from "./components/Navbar";
 import { useLocation } from "react-router-dom";
-import AppRoutes from "./routes";
+import AppRoutes from "./routes/AppRoutes";
 import Footer from "./components/Footer";
 
 const App = () => {
