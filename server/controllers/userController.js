@@ -54,3 +54,14 @@ export const loginUser = async (req, res) => {
     return res.json({ success: false, message: error.message });
   }
 };
+
+// Get User Data using JWT Token
+export const getUserData = async (req, res) => {
+  try {
+    const { user } = req;
+    res.json({ success: true, user });
+  } catch (error) {
+    console.log(error.message);
+    return res.json({ success: false, message: error.message });
+  }
+};
