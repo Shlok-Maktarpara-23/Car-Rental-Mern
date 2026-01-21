@@ -2,9 +2,14 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
 export const protect = async (req, res, next) => { 
-    const token = req.headers.authorization;
+    let token = req.headers.authorization;
     if (!token) {
         return res.json({ success: false, message: "Not Authorized" });
+    }
+
+    // Support "Bearer <token>" or raw token
+    if (token.startsWith("Bearer ")) {
+        token = token.split(" ")[1];
     }
 
     try {
