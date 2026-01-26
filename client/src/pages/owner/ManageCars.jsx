@@ -1,19 +1,64 @@
 import React, { useEffect, useState } from "react";
-import { dummyCarData } from "../../data/mock-cars";
 import Title from "../../components/owner/Title";
 import { delete_icon, eye_close_icon, eye_icon } from "../../assets";
+import { useAppContext } from "../../context/AppContext";
+import toast from "react-hot-toast";
 
 const ManageCars = () => {
+  const {isOwner, axios, currency} = useAppContext(); 
+
   const [cars, setCars] = useState([]);
-  const currency = import.meta.env.VITE_CURRENCY;
 
   const fetchOwnerCars = async () => {
-    setCars(dummyCarData);
+    try {
+      const {data} = await axios.get("/api/owners/cars");
+
+      if(data.success){
+        setCars(data.cars);
+      }else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const toggleAvailability = async (carId) => {
+    try {
+      const {data} = await axios.post("/api/owners/toggle-car", {carId});
+
+      if(data.success){
+        toast.success(data.message);
+        fetchOwnerCars();
+      }else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const deleteCar = async (carId) => {
+    try {
+      const confirm = window.confirm("Are you sure you want to delete this car?");
+      if(!confirm) return null;
+
+      const {data} = await axios.post("/api/owners/delete-car", {carId});
+
+      if(data.success){
+        toast.success(data.message);
+        fetchOwnerCars();
+      }else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   useEffect(() => {
-    fetchOwnerCars();
-  }, []);
+    isOwner && fetchOwnerCars();
+  }, [isOwner]);
 
   return (
     <div className="px-4 pt-10 md:px-10 w-full">
@@ -56,21 +101,21 @@ const ManageCars = () => {
                 <td className="p-3">
                   {currency} {car.pricePerDay}/day
                 </td>
-                <td className="p-3 max-md:hiddden">
+                <td className="p-3 max-md:hidden">
                   <span
                     className={`px-3 py-1 rounded-full text-xs ${
-                      car.isAvaliable
+                      car.isAvailable
                         ? "bg-green-100 text-green-500"
                         : "bg-red-100 text-red-500"
                     }`}
                   >
-                    {car.isAvaliable ? "Available" : "Unavailable"}
+                    {car.isAvailable ? "Available" : "Unavailable"}
                   </span>
                 </td>
 
                 <td className="flex items-center p-3">
-                  <img src={car.isAvaliable ? eye_close_icon : eye_icon} alt="" className="cursor-pointer" />
-                  <img src={delete_icon} alt="" className="cursor-pointer" />
+                  <img onClick={() => toggleAvailability(car._id)} src={car.isAvailable ? eye_close_icon : eye_icon} alt="" className="cursor-pointer" />
+                  <img onClick={() => deleteCar(car._id)} src={delete_icon} alt="" className="cursor-pointer" />
                 </td>
               </tr>
             ))}

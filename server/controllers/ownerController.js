@@ -20,6 +20,15 @@ export const changeRoleToOwner = async (req, res) => {
 export const addCar = async (req, res) => {
   try {
     const { _id } = req.user;
+
+    // Check if file exists
+    if (!req.file) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Car image is required" 
+      });
+    }
+
     let car = JSON.parse(req.body.carData);
     const imageFile = req.file;
 
@@ -44,8 +53,25 @@ export const addCar = async (req, res) => {
     const image = optimizedImageUrl;
     await Car.create({ ...car, owner: _id, image });
 
-    res.json({ success: true, message: "Car listed successfully" });
+    // Clean up temporary file after successful upload
+    if (imageFile.path) {
+      try {
+        fs.unlinkSync(imageFile.path);
+      } catch (unlinkError) {
+        console.log("Error deleting temp file:", unlinkError.message);
+      }
+    }
+
+    return res.json({ success: true, message: "Car listed successfully" });
   } catch (error) {
+    // Clean up temporary file on error
+    if (req.file?.path) {
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch (unlinkError) {
+        console.log("Error deleting temp file on error:", unlinkError.message);
+      }
+    }
     console.log(error.message);
     return res.json({ success: false, message: error.message });
   }
@@ -127,13 +153,14 @@ export const getDashboardData = async (req, res) => {
     const cars = await Car.find({ owner: _id });
     const bookings = await Booking.find({ owner: _id })
       .populate("car")
-      .short({ createdAt: -1 });
+      .sort({ createdAt: -1 });
 
-    const pendingBookings = bookings.find({ owner: _id, status: "pending" });
-    const completedBookings = bookings.find({
-      owner: _id,
-      status: "confirmed",
-    });
+    const pendingBookings = bookings.filter(
+      (booking) => booking.status === "pending"
+    );
+    const completedBookings = bookings.filter(
+      (booking) => booking.status === "confirmed"
+    );
 
     // Calculate monthly earnings from bookings where status is 'confirmed'
     const monthlyRevenue = bookings
@@ -149,6 +176,8 @@ export const getDashboardData = async (req, res) => {
       recentBookings: bookings.slice(0, 5),
       monthlyRevenue,
     };
+
+    return res.json({ success: true, dashboardData });
   } catch (error) {
     console.log(error.message);
     return res.json({ success: false, message: error.message });
@@ -184,8 +213,26 @@ export const updateUserImage = async (req, res) => {
     const image = optimizedImageUrl;
 
     await User.findByIdAndUpdate(_id, { image });
-    res.json({ success: true, message: "Profile image updated successfully" });
+
+    // Clean up temporary file after successful upload
+    if (imageFile.path) {
+      try {
+        fs.unlinkSync(imageFile.path);
+      } catch (unlinkError) {
+        console.log("Error deleting temp file:", unlinkError.message);
+      }
+    }
+
+    return res.json({ success: true, message: "Profile image updated successfully" });
   } catch (error) {
+    // Clean up temporary file on error
+    if (req.file?.path) {
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch (unlinkError) {
+        console.log("Error deleting temp file on error:", unlinkError.message);
+      }
+    }
     console.log(error.message);
     return res.json({ success: false, message: error.message });
   }
